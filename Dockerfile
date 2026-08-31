@@ -10,4 +10,4 @@ COPY . .
 
 EXPOSE 3000
 
-CMD ["node", "app/server.js"]
+CMD ["sh", "-c", "if [ -n \"$GCP_KEY_JSON\" ]; then echo \"$GCP_KEY_JSON\" > ./gcp-key.json; fi && node app/server.js"]

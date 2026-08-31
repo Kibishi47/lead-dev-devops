@@ -38,6 +38,22 @@ function route(app) {
         return res.status(500).send({ error });
       });
   });
+
+  app.post('/zip', async (req, res) => {
+    const tags = req.query.tags;
+    if (!tags) {
+      return res.status(400).send({ error: 'Les tags sont requis' });
+    }
+
+    try {
+      const producer = require('./producer');
+      await producer.publishMessage(tags);
+      return res.send(`Tags "${tags}" envoyés dans la queue Pub/Sub !`);
+    } catch (error) {
+      console.error('Erreur lors de l\'envoi du message :', error);
+      return res.status(500).send({ error: error.message });
+    }
+  });
 }
 
 module.exports = route;

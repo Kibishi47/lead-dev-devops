@@ -8,6 +8,10 @@
 
     <% if (photos.length) { %>
 
+      <form action="/zip?tags=<%= encodeURIComponent(tagsParameter) %>" method="POST" style="margin-bottom: 15px;">
+        <button type="submit" class="btn btn-primary">Zipper les 10 premières photos</button>
+      </form>
+
       <ul>
         <% photos.forEach(function (photo) { %>
           <li class="list-unstyled">
