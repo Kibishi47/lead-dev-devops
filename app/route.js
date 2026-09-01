@@ -2,6 +2,7 @@ const formValidator = require('./form_validator');
 const photoModel = require('./photo_model');
 const jobs = require('./jobs');
 const firebase = require('./firebase');
+const { tokenBucketMiddleware } = require('./limiter');
 const { Storage } = require('@google-cloud/storage');
 const moment = require('moment');
 
@@ -119,7 +120,7 @@ function route(app) {
     }
   });
 
-  app.post('/zip', async (req, res) => {
+  app.post('/zip', tokenBucketMiddleware, async (req, res) => {
     const tags = req.query.tags;
     if (!tags) {
       return res.status(400).send({ error: 'Les tags sont requis' });

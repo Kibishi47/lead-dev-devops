@@ -35,6 +35,13 @@ jest.mock('firebase-admin/database', () => ({
     }))
   }))
 }));
+jest.mock('tokenbucket', () => {
+  return jest.fn().mockImplementation(() => ({
+    loadSaved: jest.fn().mockResolvedValue(true),
+    removeTokens: jest.fn().mockResolvedValue(true),
+    save: jest.fn().mockResolvedValue(true)
+  }));
+});
 jest.mock('../../app/producer', () => ({
   publishMessage: jest.fn(tags => {
     if (tags === 'error') {

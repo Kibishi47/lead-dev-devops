@@ -8,3 +8,4 @@ secret-key.json
 firebase-key*.json
 firebase-config.json
 app/public/firebase-config.json
+redis-config.json
