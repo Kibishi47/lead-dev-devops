@@ -1,7 +1,7 @@
 require('dotenv').config();
 const { PubSub } = require('@google-cloud/pubsub');
 const { Storage } = require('@google-cloud/storage');
-const JSZip = require('jszip');
+const ZipStream = require('zip-stream');
 const got = require('got');
 const photoModel = require('./photo_model');
 const jobs = require('./jobs');
@@ -39,24 +39,7 @@ function startWorker() {
       const photos = await photoModel.getFlickrPhotos(tags);
       const top10Photos = photos.slice(0, 10);
 
-      // 2. Créer l'archive ZIP
-      const zip = new JSZip();
-      for (let index = 0; index < top10Photos.length; index++) {
-        const photo = top10Photos[index];
-        const imageUrl = photo.media.b || photo.media.m;
-        try {
-          const getFn = got.get || (got.default && got.default.get);
-          const response = await getFn(imageUrl, { responseType: 'buffer' });
-          const filename = `photo_${index + 1}.jpg`;
-          zip.file(filename, response.body);
-        } catch (err) {
-          console.error(`[Worker] Erreur de téléchargement pour ${imageUrl}:`, err.message);
-        }
-      }
-
-      const zipBuffer = await zip.generateAsync({ type: 'nodebuffer' });
-
-      // 3. Upload vers Google Cloud Storage (Bucket: ecni22026bucket)
+      // 2. Initialiser le stream d'upload GCS et ZipStream
       const filename = `zip_${Date.now()}_${Math.random().toString(36).substring(7)}.zip`;
       const gcsFile = storage.bucket(bucketName).file(`public/users/${filename}`);
 
@@ -68,11 +51,37 @@ function startWorker() {
         resumable: false
       });
 
-      await new Promise((resolve, reject) => {
+      const zip = new ZipStream();
+      zip.pipe(stream);
+
+      const uploadPromise = new Promise((resolve, reject) => {
         stream.on('error', (err) => reject(err));
         stream.on('finish', () => resolve('Ok'));
-        stream.end(zipBuffer);
+        zip.on('error', (err) => reject(err));
       });
+
+      // 3. Ajouter chaque photo dans le zip-stream
+      for (let index = 0; index < top10Photos.length; index++) {
+        const photo = top10Photos[index];
+        const imageUrl = photo.media.b || photo.media.m;
+        try {
+          const getFn = got.get || (got.default && got.default.get);
+          const response = await getFn(imageUrl, { responseType: 'buffer' });
+          const entryName = `photo_${index + 1}.jpg`;
+          await new Promise((resolve, reject) => {
+            zip.entry(response.body, { name: entryName }, (err, entry) => {
+              if (err) reject(err);
+              else resolve(entry);
+            });
+          });
+        } catch (err) {
+          console.error(`[Worker] Erreur de téléchargement pour ${imageUrl}:`, err.message);
+        }
+      }
+
+      // Finaliser le zip-stream et attendre la fin de l'upload
+      zip.finish();
+      await uploadPromise;
 
       console.log(`[Worker] Zip uploade avec succes sur GCS : public/users/${filename}`);
 

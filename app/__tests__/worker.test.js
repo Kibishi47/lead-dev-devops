@@ -25,6 +25,19 @@ jest.mock('@google-cloud/storage', () => ({
   Storage: jest.fn().mockImplementation(() => mockStorage)
 }));
 
+jest.mock('zip-stream', () => {
+  const Evt = require('events');
+  return jest.fn().mockImplementation(() => {
+    const emitter = new Evt();
+    emitter.pipe = jest.fn();
+    emitter.entry = jest.fn((data, opts, cb) => {
+      if (typeof cb === 'function') cb(null, { name: opts.name });
+    });
+    emitter.finish = jest.fn();
+    return emitter;
+  });
+});
+
 jest.mock('got', () => {
   return {
     get: jest.fn().mockResolvedValue({ body: Buffer.from('fake-image-bytes') }),
@@ -64,10 +77,10 @@ describe('worker.js', () => {
     worker.startWorker();
 
     const mockStream = new EventEmitter();
-    mockStream.end = jest.fn(() => {
+    mockFile.createWriteStream.mockImplementation(() => {
       process.nextTick(() => mockStream.emit('finish'));
+      return mockStream;
     });
-    mockFile.createWriteStream.mockReturnValue(mockStream);
 
     const message = {
       id: 'msg-1',
@@ -92,10 +105,10 @@ describe('worker.js', () => {
     worker.startWorker();
 
     const mockStream = new EventEmitter();
-    mockStream.end = jest.fn(() => {
+    mockFile.createWriteStream.mockImplementation(() => {
       process.nextTick(() => mockStream.emit('finish'));
+      return mockStream;
     });
-    mockFile.createWriteStream.mockReturnValue(mockStream);
 
     const message = {
       id: 'msg-media-m',
@@ -135,10 +148,10 @@ describe('worker.js', () => {
     worker.startWorker();
 
     const mockStream = new EventEmitter();
-    mockStream.end = jest.fn(() => {
+    mockFile.createWriteStream.mockImplementation(() => {
       process.nextTick(() => mockStream.emit('finish'));
+      return mockStream;
     });
-    mockFile.createWriteStream.mockReturnValue(mockStream);
 
     const message = {
       id: 'msg-3',
@@ -181,10 +194,10 @@ describe('worker.js', () => {
     worker.startWorker();
 
     const mockStream = new EventEmitter();
-    mockStream.end = jest.fn(() => {
+    mockFile.createWriteStream.mockImplementation(() => {
       process.nextTick(() => mockStream.emit('finish'));
+      return mockStream;
     });
-    mockFile.createWriteStream.mockReturnValue(mockStream);
 
     const message = {
       id: 'msg-5',
