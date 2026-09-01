@@ -5,6 +5,8 @@ const JSZip = require('jszip');
 const got = require('got');
 const photoModel = require('./photo_model');
 const jobs = require('./jobs');
+const firebase = require('./firebase');
+const moment = require('moment');
 
 const projectId = process.env.GCP_PROJECT_ID || 'ecni2-2026';
 const bucketName = process.env.STORAGE_BUCKET || 'ecni22026bucket';
@@ -74,8 +76,22 @@ function startWorker() {
 
       console.log(`[Worker] Zip uploade avec succes sur GCS : public/users/${filename}`);
 
-      // 4. Stocker le statut du job terminé
-      jobs.setJobCompleted(tags, `public/users/${filename}`);
+      // 4. Stocker le statut du job terminé en mémoire et dans Firebase Realtime Database
+      const storagePath = `public/users/${filename}`;
+      jobs.setJobCompleted(tags, storagePath);
+
+      try {
+        const userPrenom = process.env.USER_PRENOM || 'emmanuel';
+        const heureDuZippage = moment().format('YYYY-MM-DD_HH-mm-ss');
+        await firebase.saveZip(userPrenom, heureDuZippage, filename, {
+          tags: tags,
+          storagePath: storagePath,
+          filename: filename,
+          createdAt: new Date().toISOString()
+        });
+      } catch (fbError) {
+        console.error('[Worker] Erreur lors de la sauvegarde Firebase:', fbError.message);
+      }
 
       // 5. Acquitter le message Pub/Sub
       message.ack();

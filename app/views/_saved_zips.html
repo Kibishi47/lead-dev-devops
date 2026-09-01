@@ -1,0 +1,44 @@
+<% if (typeof savedZips !== 'undefined' && savedZips && savedZips.length > 0) { %>
+  <hr>
+  <div class="panel panel-info">
+    <div class="panel-heading">
+      <h3 class="panel-title">
+        <span class="glyphicon glyphicon-cloud-download"></span>
+        Zips déjà préparés (enregistrés dans Firebase)
+      </h3>
+    </div>
+    <div class="panel-body">
+      <p class="text-muted">Ces archives ont été sauvegardées dans Firebase Realtime Database et restent accessibles même après un redémarrage de l'instance.</p>
+      <div class="table-responsive">
+        <table class="table table-striped table-hover">
+          <thead>
+            <tr>
+              <th>Tags</th>
+              <th>Date / Heure</th>
+              <th>Fichier</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% savedZips.forEach(function(zip) { %>
+              <tr>
+                <td><span class="label label-primary"><%= zip.tags %></span></td>
+                <td><%= zip.heure ? zip.heure.replace(/_/g, ' ') : (zip.createdAt || '') %></td>
+                <td><code><%= zip.filename %></code></td>
+                <td>
+                  <% if (zip.downloadUrl) { %>
+                    <a href="<%= zip.downloadUrl %>" target="_blank" class="btn btn-xs btn-success">
+                      <span class="glyphicon glyphicon-download-alt"></span> Télécharger
+                    </a>
+                  <% } else { %>
+                    <span class="text-muted">Lien non disponible</span>
+                  <% } %>
+                </td>
+              </tr>
+            <% }); %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+<% } %>

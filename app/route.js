@@ -1,6 +1,7 @@
 const formValidator = require('./form_validator');
 const photoModel = require('./photo_model');
 const jobs = require('./jobs');
+const firebase = require('./firebase');
 const { Storage } = require('@google-cloud/storage');
 const moment = require('moment');
 
@@ -11,6 +12,33 @@ function route(app) {
   app.get('/', async (req, res) => {
     const tags = req.query.tags;
     const tagmode = req.query.tagmode;
+    const userPrenom = process.env.USER_PRENOM || 'emmanuel';
+
+    // Récupérer les zips sauvegardés dans Firebase
+    let savedZips = [];
+    try {
+      savedZips = await firebase.getZipsByUser(userPrenom);
+      // Générer une URL signée pour chaque zip sauvegardé
+      for (const zipItem of savedZips) {
+        if (zipItem.storagePath) {
+          try {
+            const options = {
+              action: 'read',
+              expires: moment().add(2, 'days').unix() * 1000
+            };
+            const [signedUrl] = await storage
+              .bucket(bucketName)
+              .file(zipItem.storagePath)
+              .getSignedUrl(options);
+            zipItem.downloadUrl = signedUrl;
+          } catch (err) {
+            console.error('Erreur URL signée pour zip historique:', err.message);
+          }
+        }
+      }
+    } catch (err) {
+      console.error('Erreur lors de la lecture des zips Firebase:', err.message);
+    }
 
     const ejsLocalVariables = {
       tagsParameter: tags || '',
@@ -18,7 +46,9 @@ function route(app) {
       photos: [],
       searchResults: false,
       invalidParameters: false,
-      zipDownloadUrl: null
+      zipDownloadUrl: null,
+      savedZips: savedZips,
+      firebaseApiKey: process.env.FIREBASE_API_KEY || 'AIzaSyDummyKey'
     };
 
     // if no input params are passed in then render the view with out querying the api
@@ -58,6 +88,35 @@ function route(app) {
     } catch (error) {
       console.log('aspdfonaposd', error);
       return res.status(500).send({ error });
+    }
+  });
+
+  // Endpoint pour lire les zips déjà générés depuis Firebase (Étape II)
+  app.get('/api/zips', async (req, res) => {
+    const userPrenom = req.query.prenom || process.env.USER_PRENOM || 'emmanuel';
+    try {
+      const zips = await firebase.getZipsByUser(userPrenom);
+      for (const zip of zips) {
+        if (zip.storagePath) {
+          try {
+            const options = {
+              action: 'read',
+              expires: moment().add(2, 'days').unix() * 1000
+            };
+            const [signedUrl] = await storage
+              .bucket(bucketName)
+              .file(zip.storagePath)
+              .getSignedUrl(options);
+            zip.downloadUrl = signedUrl;
+          } catch (err) {
+            console.error('Erreur sign url api:', err.message);
+          }
+        }
+      }
+      return res.json({ prenom: userPrenom, count: zips.length, zips });
+    } catch (error) {
+      console.error('Erreur /api/zips:', error);
+      return res.status(500).json({ error: error.message });
     }
   });
 

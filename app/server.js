@@ -19,7 +19,9 @@ require('./route')(app);
 
 // start background queue worker
 const worker = require('./worker');
-worker.startWorker();
+if (process.env.NODE_ENV !== 'test') {
+  worker.startWorker();
+}
 
 // server
 const port = process.env.PORT || 3000;

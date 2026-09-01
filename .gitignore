@@ -5,3 +5,6 @@ npm-debug.log*
 *.key.json
 gcp-key.json
 secret-key.json
+firebase-key*.json
+firebase-config.json
+app/public/firebase-config.json
