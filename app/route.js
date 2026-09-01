@@ -1,8 +1,14 @@
 const formValidator = require('./form_validator');
 const photoModel = require('./photo_model');
+const jobs = require('./jobs');
+const { Storage } = require('@google-cloud/storage');
+const moment = require('moment');
+
+const bucketName = process.env.STORAGE_BUCKET || 'ecni22026bucket';
+const storage = new Storage();
 
 function route(app) {
-  app.get('/', (req, res) => {
+  app.get('/', async (req, res) => {
     const tags = req.query.tags;
     const tagmode = req.query.tagmode;
 
@@ -11,7 +17,8 @@ function route(app) {
       tagmodeParameter: tagmode || '',
       photos: [],
       searchResults: false,
-      invalidParameters: false
+      invalidParameters: false,
+      zipDownloadUrl: null
     };
 
     // if no input params are passed in then render the view with out querying the api
@@ -25,18 +32,33 @@ function route(app) {
       return res.render('index', ejsLocalVariables);
     }
 
-    // get photos from flickr public feed api
-    return photoModel
-      .getFlickrPhotos(tags, tagmode)
-      .then(photos => {
-        ejsLocalVariables.photos = photos;
-        ejsLocalVariables.searchResults = true;
-        return res.render('index', ejsLocalVariables);
-      })
-      .catch(error => {
-        console.log('aspdfonaposd', error)
-        return res.status(500).send({ error });
-      });
+    try {
+      const photos = await photoModel.getFlickrPhotos(tags, tagmode);
+      ejsLocalVariables.photos = photos;
+      ejsLocalVariables.searchResults = true;
+
+      const fileName = jobs.getJobFile(tags);
+      if (fileName) {
+        try {
+          const options = {
+            action: 'read',
+            expires: moment().add(2, 'days').unix() * 1000
+          };
+          const [signedUrl] = await storage
+            .bucket(bucketName)
+            .file(fileName)
+            .getSignedUrl(options);
+          ejsLocalVariables.zipDownloadUrl = signedUrl;
+        } catch (err) {
+          console.error('Erreur lors de la generation de l\'URL signee:', err.message);
+        }
+      }
+
+      return res.render('index', ejsLocalVariables);
+    } catch (error) {
+      console.log('aspdfonaposd', error);
+      return res.status(500).send({ error });
+    }
   });
 
   app.post('/zip', async (req, res) => {

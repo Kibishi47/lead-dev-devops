@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1788185827904" clover="3.2.0">
-  <project timestamp="1788185827904" name="All files">
-    <metrics statements="83" coveredstatements="83" conditionals="20" coveredconditionals="20" methods="13" coveredmethods="13" elements="116" coveredelements="116" complexity="0" loc="83" ncloc="83" packages="1" files="6" classes="6"/>
+<coverage generated="1788245268033" clover="3.2.0">
+  <project timestamp="1788245268033" name="All files">
+    <metrics statements="157" coveredstatements="114" conditionals="39" coveredconditionals="28" methods="20" coveredmethods="13" elements="216" coveredelements="155" complexity="0" loc="157" ncloc="157" packages="1" files="8" classes="8"/>
     <file name="form_validator.js" path="/Users/emmanuelmoulin/Documents/Projets/Ecole/Lead Dev/Archive/app/form_validator.js">
       <metrics statements="5" coveredstatements="5" conditionals="4" coveredconditionals="4" methods="3" coveredmethods="3"/>
       <line num="3" count="10" type="stmt"/>
@@ -9,6 +9,14 @@
       <line num="8" count="7" type="cond" truecount="2" falsecount="0"/>
       <line num="12" count="6" type="cond" truecount="2" falsecount="0"/>
       <line num="15" count="2" type="stmt"/>
+    </file>
+    <file name="jobs.js" path="/Users/emmanuelmoulin/Documents/Projets/Ecole/Lead Dev/Archive/app/jobs.js">
+      <metrics statements="5" coveredstatements="3" conditionals="0" coveredconditionals="0" methods="3" coveredmethods="1"/>
+      <line num="1" count="1" type="stmt"/>
+      <line num="3" count="1" type="stmt"/>
+      <line num="5" count="0" type="stmt"/>
+      <line num="8" count="1" type="stmt"/>
+      <line num="11" count="0" type="stmt"/>
     </file>
     <file name="jsonp_helper.js" path="/Users/emmanuelmoulin/Documents/Projets/Ecole/Lead Dev/Archive/app/jsonp_helper.js">
       <metrics statements="9" coveredstatements="9" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
@@ -55,38 +63,51 @@
       <line num="25" count="3" type="stmt"/>
     </file>
     <file name="route.js" path="/Users/emmanuelmoulin/Documents/Projets/Ecole/Lead Dev/Archive/app/route.js">
-      <metrics statements="28" coveredstatements="28" conditionals="12" coveredconditionals="12" methods="5" coveredmethods="5"/>
+      <metrics statements="41" coveredstatements="36" conditionals="16" coveredconditionals="15" methods="3" coveredmethods="3"/>
       <line num="1" count="1" type="stmt"/>
       <line num="2" count="1" type="stmt"/>
+      <line num="3" count="1" type="stmt"/>
+      <line num="4" count="1" type="stmt"/>
       <line num="5" count="1" type="stmt"/>
-      <line num="6" count="4" type="stmt"/>
-      <line num="7" count="4" type="stmt"/>
-      <line num="9" count="4" type="stmt"/>
-      <line num="18" count="4" type="cond" truecount="4" falsecount="0"/>
-      <line num="19" count="1" type="stmt"/>
-      <line num="23" count="3" type="cond" truecount="2" falsecount="0"/>
-      <line num="24" count="1" type="stmt"/>
-      <line num="25" count="1" type="stmt"/>
-      <line num="29" count="2" type="stmt"/>
+      <line num="7" count="1" type="cond" truecount="2" falsecount="0"/>
+      <line num="8" count="1" type="stmt"/>
+      <line num="11" count="1" type="stmt"/>
+      <line num="12" count="4" type="stmt"/>
+      <line num="13" count="4" type="stmt"/>
+      <line num="15" count="4" type="stmt"/>
+      <line num="25" count="4" type="cond" truecount="4" falsecount="0"/>
+      <line num="26" count="1" type="stmt"/>
+      <line num="30" count="3" type="cond" truecount="2" falsecount="0"/>
+      <line num="31" count="1" type="stmt"/>
       <line num="32" count="1" type="stmt"/>
-      <line num="33" count="1" type="stmt"/>
-      <line num="34" count="1" type="stmt"/>
+      <line num="35" count="2" type="stmt"/>
+      <line num="36" count="2" type="stmt"/>
       <line num="37" count="1" type="stmt"/>
       <line num="38" count="1" type="stmt"/>
-      <line num="42" count="1" type="stmt"/>
-      <line num="43" count="3" type="stmt"/>
-      <line num="44" count="3" type="cond" truecount="2" falsecount="0"/>
-      <line num="45" count="1" type="stmt"/>
-      <line num="48" count="2" type="stmt"/>
-      <line num="49" count="2" type="stmt"/>
-      <line num="50" count="2" type="stmt"/>
-      <line num="51" count="1" type="stmt"/>
-      <line num="53" count="1" type="stmt"/>
-      <line num="54" count="1" type="stmt"/>
+      <line num="40" count="1" type="stmt"/>
+      <line num="41" count="1" type="cond" truecount="1" falsecount="1"/>
+      <line num="42" count="0" type="stmt"/>
+      <line num="43" count="0" type="stmt"/>
+      <line num="47" count="0" type="stmt"/>
+      <line num="51" count="0" type="stmt"/>
+      <line num="53" count="0" type="stmt"/>
+      <line num="57" count="1" type="stmt"/>
       <line num="59" count="1" type="stmt"/>
+      <line num="60" count="1" type="stmt"/>
+      <line num="64" count="1" type="stmt"/>
+      <line num="65" count="3" type="stmt"/>
+      <line num="66" count="3" type="cond" truecount="2" falsecount="0"/>
+      <line num="67" count="1" type="stmt"/>
+      <line num="70" count="2" type="stmt"/>
+      <line num="71" count="2" type="stmt"/>
+      <line num="72" count="2" type="stmt"/>
+      <line num="73" count="1" type="stmt"/>
+      <line num="75" count="1" type="stmt"/>
+      <line num="76" count="1" type="stmt"/>
+      <line num="81" count="1" type="stmt"/>
     </file>
     <file name="server.js" path="/Users/emmanuelmoulin/Documents/Projets/Ecole/Lead Dev/Archive/app/server.js">
-      <metrics statements="15" coveredstatements="15" conditionals="2" coveredconditionals="2" methods="0" coveredmethods="0"/>
+      <metrics statements="17" coveredstatements="17" conditionals="2" coveredconditionals="2" methods="0" coveredmethods="0"/>
       <line num="1" count="1" type="stmt"/>
       <line num="2" count="1" type="stmt"/>
       <line num="3" count="1" type="stmt"/>
@@ -98,10 +119,69 @@
       <line num="14" count="1" type="stmt"/>
       <line num="15" count="1" type="stmt"/>
       <line num="18" count="1" type="stmt"/>
-      <line num="21" count="1" type="cond" truecount="2" falsecount="0"/>
+      <line num="21" count="1" type="stmt"/>
       <line num="22" count="1" type="stmt"/>
-      <line num="23" count="1" type="stmt"/>
-      <line num="25" count="1" type="stmt"/>
+      <line num="25" count="1" type="cond" truecount="2" falsecount="0"/>
+      <line num="26" count="1" type="stmt"/>
+      <line num="27" count="1" type="stmt"/>
+      <line num="29" count="1" type="stmt"/>
+    </file>
+    <file name="worker.js" path="/Users/emmanuelmoulin/Documents/Projets/Ecole/Lead Dev/Archive/app/worker.js">
+      <metrics statements="54" coveredstatements="18" conditionals="15" coveredconditionals="5" methods="6" coveredmethods="1"/>
+      <line num="1" count="1" type="stmt"/>
+      <line num="2" count="1" type="stmt"/>
+      <line num="3" count="1" type="stmt"/>
+      <line num="4" count="1" type="stmt"/>
+      <line num="5" count="1" type="stmt"/>
+      <line num="6" count="1" type="stmt"/>
+      <line num="7" count="1" type="stmt"/>
+      <line num="9" count="1" type="cond" truecount="1" falsecount="1"/>
+      <line num="10" count="1" type="cond" truecount="1" falsecount="1"/>
+      <line num="11" count="1" type="cond" truecount="1" falsecount="1"/>
+      <line num="12" count="1" type="cond" truecount="2" falsecount="0"/>
+      <line num="14" count="1" type="stmt"/>
+      <line num="15" count="1" type="stmt"/>
+      <line num="18" count="1" type="stmt"/>
+      <line num="20" count="1" type="stmt"/>
+      <line num="22" count="1" type="stmt"/>
+      <line num="23" count="0" type="stmt"/>
+      <line num="24" count="0" type="stmt"/>
+      <line num="25" count="0" type="stmt"/>
+      <line num="26" count="0" type="stmt"/>
+      <line num="28" count="0" type="cond" truecount="0" falsecount="2"/>
+      <line num="29" count="0" type="stmt"/>
+      <line num="30" count="0" type="stmt"/>
+      <line num="31" count="0" type="stmt"/>
+      <line num="34" count="0" type="stmt"/>
+      <line num="37" count="0" type="stmt"/>
+      <line num="38" count="0" type="stmt"/>
+      <line num="41" count="0" type="stmt"/>
+      <line num="42" count="0" type="stmt"/>
+      <line num="43" count="0" type="stmt"/>
+      <line num="44" count="0" type="cond" truecount="0" falsecount="2"/>
+      <line num="45" count="0" type="stmt"/>
+      <line num="46" count="0" type="cond" truecount="0" falsecount="3"/>
+      <line num="47" count="0" type="stmt"/>
+      <line num="48" count="0" type="stmt"/>
+      <line num="49" count="0" type="stmt"/>
+      <line num="51" count="0" type="stmt"/>
+      <line num="55" count="0" type="stmt"/>
+      <line num="58" count="0" type="stmt"/>
+      <line num="59" count="0" type="stmt"/>
+      <line num="61" count="0" type="stmt"/>
+      <line num="69" count="0" type="stmt"/>
+      <line num="70" count="0" type="stmt"/>
+      <line num="71" count="0" type="stmt"/>
+      <line num="72" count="0" type="stmt"/>
+      <line num="75" count="0" type="stmt"/>
+      <line num="78" count="0" type="stmt"/>
+      <line num="81" count="0" type="stmt"/>
+      <line num="82" count="0" type="stmt"/>
+      <line num="84" count="0" type="stmt"/>
+      <line num="85" count="0" type="stmt"/>
+      <line num="89" count="1" type="stmt"/>
+      <line num="90" count="0" type="stmt"/>
+      <line num="94" count="1" type="stmt"/>
     </file>
   </project>
 </coverage>

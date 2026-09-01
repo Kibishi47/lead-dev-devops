@@ -17,6 +17,10 @@ app.set('view engine', 'html');
 // load route
 require('./route')(app);
 
+// start background queue worker
+const worker = require('./worker');
+worker.startWorker();
+
 // server
 const port = process.env.PORT || 3000;
 app.server = app.listen(port);

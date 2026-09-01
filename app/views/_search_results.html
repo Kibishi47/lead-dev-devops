@@ -8,9 +8,18 @@
 
     <% if (photos.length) { %>
 
-      <form action="/zip?tags=<%= encodeURIComponent(tagsParameter) %>" method="POST" style="margin-bottom: 15px;">
-        <button type="submit" class="btn btn-primary">Zipper les 10 premières photos</button>
-      </form>
+      <% if (typeof zipDownloadUrl !== 'undefined' && zipDownloadUrl) { %>
+        <div class="alert alert-success" style="margin-bottom: 15px;">
+          <strong>Votre archive ZIP est prête !</strong><br>
+          <a href="<%= zipDownloadUrl %>" class="btn btn-success" target="_blank" style="margin-top: 10px;">
+            Télécharger le fichier ZIP
+          </a>
+        </div>
+      <% } else { %>
+        <form action="/zip?tags=<%= encodeURIComponent(tagsParameter) %>" method="POST" style="margin-bottom: 15px;">
+          <button type="submit" class="btn btn-primary">Zipper les 10 premières photos</button>
+        </form>
+      <% } %>
 
       <ul>
         <% photos.forEach(function (photo) { %>
