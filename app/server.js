@@ -25,7 +25,9 @@ if (process.env.NODE_ENV !== 'test') {
 
 // server
 const port = process.env.PORT || 3000;
-app.server = app.listen(port);
-console.log(`listening on port ${port}`);
+if (process.env.NODE_ENV !== 'test') {
+  app.server = app.listen(port);
+  console.log(`listening on port ${port}`);
+}
 
 module.exports = app;

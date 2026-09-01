@@ -18,14 +18,18 @@ let mockFirebaseVal = {
   }
 };
 let mockDbRefOnce = jest.fn(() => Promise.resolve({ val: () => mockFirebaseVal }));
-jest.mock('firebase-admin', () => ({
-  apps: [],
+jest.mock('firebase-admin/app', () => ({
   initializeApp: jest.fn(),
-  credential: {
-    applicationDefault: jest.fn()
-  },
-  database: jest.fn(() => ({
+  cert: jest.fn(() => ({})),
+  getApps: jest.fn(() => [])
+}));
+jest.mock('firebase-admin/database', () => ({
+  getDatabase: jest.fn(() => ({
     ref: jest.fn(() => ({
+      child: jest.fn(() => ({
+        child: jest.fn(() => ({ set: jest.fn().mockResolvedValue(true) })),
+        set: jest.fn().mockResolvedValue(true)
+      })),
       set: jest.fn().mockResolvedValue(true),
       once: mockDbRefOnce
     }))
@@ -44,7 +48,9 @@ const app = require('../../app/server');
 
 describe('index route', () => {
   afterEach(() => {
-    app.server.close();
+    if (app.server && app.server.close) {
+      app.server.close();
+    }
   });
 
   test('should respond with a 200 with no query parameters', () => {
@@ -117,7 +123,9 @@ describe('index route', () => {
 
 describe('zip route', () => {
   afterEach(() => {
-    app.server.close();
+    if (app.server && app.server.close) {
+      app.server.close();
+    }
   });
 
   test('should respond with 400 if no tags parameter is provided', () => {
@@ -150,7 +158,9 @@ describe('zip route', () => {
 
 describe('api zips route', () => {
   afterEach(() => {
-    app.server.close();
+    if (app.server && app.server.close) {
+      app.server.close();
+    }
   });
 
   test('should respond with json list of zips', () => {

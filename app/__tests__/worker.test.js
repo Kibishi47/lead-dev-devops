@@ -213,6 +213,64 @@ describe('worker.js', () => {
     expect(message.ack).toHaveBeenCalled();
   });
 
+  test('should handle zip.entry errors gracefully', async () => {
+    const ZipStream = require('zip-stream');
+    ZipStream.mockImplementationOnce(() => {
+      const Evt = require('events');
+      const emitter = new Evt();
+      emitter.pipe = jest.fn();
+      emitter.entry = jest.fn((data, opts, cb) => {
+        if (typeof cb === 'function') cb(new Error('Zip compression error'));
+      });
+      emitter.finish = jest.fn();
+      return emitter;
+    });
+
+    worker.startWorker();
+
+    const mockStream = new EventEmitter();
+    mockFile.createWriteStream.mockImplementation(() => {
+      process.nextTick(() => mockStream.emit('finish'));
+      return mockStream;
+    });
+
+    const message = {
+      id: 'msg-zip-err',
+      data: Buffer.from(JSON.stringify({ tags: 'mountains' })),
+      ack: jest.fn(),
+      nack: jest.fn()
+    };
+
+    mockSubscription.emit('message', message);
+
+    await new Promise(resolve => setTimeout(resolve, 50));
+
+    expect(message.ack).toHaveBeenCalled();
+  });
+
+  test('should nack message when upload stream emits error', async () => {
+    worker.startWorker();
+
+    const mockStream = new EventEmitter();
+    mockFile.createWriteStream.mockImplementation(() => {
+      process.nextTick(() => mockStream.emit('error', new Error('GCS upload error')));
+      return mockStream;
+    });
+
+    const message = {
+      id: 'msg-upload-err',
+      data: Buffer.from(JSON.stringify({ tags: 'stream-fail' })),
+      ack: jest.fn(),
+      nack: jest.fn()
+    };
+
+    mockSubscription.emit('message', message);
+
+    await new Promise(resolve => setTimeout(resolve, 50));
+
+    expect(message.nack).toHaveBeenCalled();
+  });
+
   test('should handle subscription errors', () => {
     const spy = jest.spyOn(console, 'error').mockImplementation(() => {});
     worker.startWorker();

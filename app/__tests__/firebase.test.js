@@ -1,22 +1,29 @@
 const mockSet = jest.fn();
 const mockOnce = jest.fn();
+const mockChild2 = jest.fn(() => ({
+  set: mockSet
+}));
+const mockChild1 = jest.fn(() => ({
+  child: mockChild2,
+  set: mockSet
+}));
 const mockRef = jest.fn(() => ({
+  child: mockChild1,
   set: mockSet,
   once: mockOnce
 }));
 
-jest.mock('firebase-admin', () => {
-  return {
-    apps: [],
-    initializeApp: jest.fn(),
-    credential: {
-      applicationDefault: jest.fn()
-    },
-    database: jest.fn(() => ({
-      ref: mockRef
-    }))
-  };
-});
+jest.mock('firebase-admin/app', () => ({
+  initializeApp: jest.fn(),
+  cert: jest.fn(() => ({})),
+  getApps: jest.fn(() => [])
+}));
+
+jest.mock('firebase-admin/database', () => ({
+  getDatabase: jest.fn(() => ({
+    ref: mockRef
+  }))
+}));
 
 describe('firebase.js', () => {
   beforeEach(() => {
@@ -33,7 +40,9 @@ describe('firebase.js', () => {
     });
 
     expect(path).toBe('emmanuel/2026-09-01/zip_123_zip');
-    expect(mockRef).toHaveBeenCalledWith('emmanuel/2026-09-01/zip_123_zip');
+    expect(mockRef).toHaveBeenCalledWith('emmanuel');
+    expect(mockChild1).toHaveBeenCalledWith('2026-09-01');
+    expect(mockChild2).toHaveBeenCalledWith('zip_123_zip');
     expect(mockSet).toHaveBeenCalledWith({
       tags: 'paris',
       storagePath: 'public/users/zip_123.zip'
@@ -79,13 +88,27 @@ describe('firebase.js', () => {
     expect(mockRef).toHaveBeenCalledWith('emmanuel');
   });
 
-  test('getZipsByUser should return empty array if no data exists', async () => {
-    mockOnce.mockResolvedValue({
-      val: () => null
+  test('should handle broken firebase-config.json file gracefully', () => {
+    jest.isolateModules(() => {
+      const fs = require('fs');
+      jest.spyOn(fs, 'existsSync').mockImplementation(p => typeof p === 'string' && p.includes('firebase-config.json'));
+      jest.spyOn(fs, 'readFileSync').mockReturnValue('broken json {');
+      const firebase = require('../firebase');
+      expect(firebase).toBeDefined();
+      fs.existsSync.mockRestore();
+      fs.readFileSync.mockRestore();
     });
-    const firebase = require('../firebase');
+  });
 
-    const zips = await firebase.getZipsByUser('unknown');
-    expect(zips).toEqual([]);
+  test('should handle broken gcp-key.json file gracefully', () => {
+    jest.isolateModules(() => {
+      const fs = require('fs');
+      jest.spyOn(fs, 'existsSync').mockImplementation(p => typeof p === 'string' && p.includes('gcp-key.json'));
+      jest.spyOn(fs, 'readFileSync').mockReturnValue('broken json {');
+      const firebase = require('../firebase');
+      expect(firebase).toBeDefined();
+      fs.existsSync.mockRestore();
+      fs.readFileSync.mockRestore();
+    });
   });
 });

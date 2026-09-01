@@ -47,8 +47,7 @@ function route(app) {
       searchResults: false,
       invalidParameters: false,
       zipDownloadUrl: null,
-      savedZips: savedZips,
-      firebaseApiKey: process.env.FIREBASE_API_KEY || 'AIzaSyDummyKey'
+      savedZips: savedZips
     };
 
     // if no input params are passed in then render the view with out querying the api
