@@ -135,6 +135,11 @@ function route(app) {
       return res.status(500).send({ error: error.message });
     }
   });
+
+  // Endpoints MCP (TP MCP)
+  const mcp = require('./mcp');
+  app.get('/mcp', mcp.mcpAuthMiddleware, mcp.handleMcpGet);
+  app.post('/mcp', mcp.mcpAuthMiddleware, mcp.handleMcpPost);
 }
 
 module.exports = route;

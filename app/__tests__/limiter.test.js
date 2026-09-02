@@ -33,7 +33,7 @@ describe('limiter.js', () => {
     await limiter.tokenBucketMiddleware(req, res, next);
 
     expect(mockLoadSaved).toHaveBeenCalled();
-    expect(mockRemoveTokens).toHaveBeenCalledWith(1);
+    expect(mockRemoveTokens).toHaveBeenCalledWith(limiter.TOKEN_COST);
     expect(mockSave).toHaveBeenCalled();
     expect(next).toHaveBeenCalled();
     expect(res.status).not.toHaveBeenCalled();
@@ -50,7 +50,7 @@ describe('limiter.js', () => {
 
     await limiter.tokenBucketMiddleware(req, res, next);
 
-    expect(mockRemoveTokens).toHaveBeenCalledWith(1);
+    expect(mockRemoveTokens).toHaveBeenCalledWith(limiter.TOKEN_COST);
     expect(next).toHaveBeenCalled();
   });
 
@@ -69,12 +69,13 @@ describe('limiter.js', () => {
 
     await limiter.tokenBucketMiddleware(req, res, next);
 
-    expect(res.set).toHaveBeenCalledWith('Retry-After', '1');
+    const expectedRetryAfter = String(Math.ceil(limiter.TOKEN_COST / limiter.TOKENS_PER_SECOND));
+    expect(res.set).toHaveBeenCalledWith('Retry-After', expectedRetryAfter);
     expect(res.status).toHaveBeenCalledWith(429);
     expect(res.json).toHaveBeenCalledWith(
       expect.objectContaining({
         error: expect.stringMatching(/quota de jetons dépassé/i),
-        retryAfter: '1s'
+        retryAfter: `${expectedRetryAfter}s`
       })
     );
     expect(next).not.toHaveBeenCalled();
