@@ -15,13 +15,13 @@ if (fs.existsSync(configPath)) {
 }
 
 // 1. Nombre de tokens de base (capacité max du seau)
-const DEFAULT_CAPACITY = Number(process.env.TOKEN_BUCKET_CAPACITY || process.env.TOKEN_BUCKET_SIZE || 15);
+const DEFAULT_CAPACITY = Number(process.env.TOKEN_BUCKET_CAPACITY || process.env.TOKEN_BUCKET_SIZE || 5);
 
 // 2. Nombre de tokens récupérés par seconde
 const TOKENS_PER_SECOND = Number(process.env.TOKENS_PER_SECOND || 1);
 
 // 3. Coût en jetons d'une requête
-const TOKEN_COST = Number(process.env.TOKEN_COST || 1);
+const TOKEN_COST = Number(process.env.TOKEN_COST || 2);
 
 function getBucket(bucketName, options = {}) {
   const capacity = options.capacity || DEFAULT_CAPACITY;
